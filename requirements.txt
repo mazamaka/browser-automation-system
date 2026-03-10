@@ -1,0 +1,32 @@
+# Core dependencies
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+
+# Browser automation
+browser-use
+playwright
+
+# AI Models
+anthropic
+langchain
+langchain-anthropic
+langchain-openai
+
+# Async support
+aiofiles
+
+# WebSocket
+websockets
+
+# Data handling
+python-dotenv
+
+# Logging
+loguru
+
+# Testing (optional)
+pytest
+pytest-asyncio
+httpx
