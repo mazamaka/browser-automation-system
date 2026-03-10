@@ -50,7 +50,7 @@ class PromptStore:
             
             return True
         except Exception as e:
-            print(f"Ошибка сохранения задачи: {e}")
+            logger.error(f"Ошибка сохранения задачи: {e}")
             return False
     
     async def load_task(self, task_id: str) -> Optional[Task]:
@@ -70,7 +70,7 @@ class PromptStore:
             
             return Task(**task_dict)
         except Exception as e:
-            print(f"Ошибка загрузки задачи: {e}")
+            logger.error(f"Ошибка загрузки задачи: {e}")
             return None
     
     async def get_all_tasks(self, limit: int = 100, offset: int = 0) -> List[Task]:
@@ -102,7 +102,7 @@ class PromptStore:
             
             return True
         except Exception as e:
-            print(f"Ошибка сохранения выполнения: {e}")
+            logger.error(f"Ошибка сохранения выполнения: {e}")
             return False
     
     async def get_task_executions(self, task_id: str) -> List[TaskExecution]:
@@ -118,7 +118,7 @@ class PromptStore:
                     execution_dict = self._deserialize_datetimes(execution_dict)
                     executions.append(TaskExecution(**execution_dict))
             except Exception as e:
-                print(f"Ошибка загрузки выполнения: {e}")
+                logger.error(f"Ошибка загрузки выполнения: {e}")
         
         return sorted(executions, key=lambda x: x.timestamp, reverse=True)
     
@@ -155,7 +155,7 @@ class PromptStore:
             
             return True
         except Exception as e:
-            print(f"Ошибка сохранения паттерна: {e}")
+            logger.error(f"Ошибка сохранения паттерна: {e}")
             return False
     
     async def get_patterns_by_type(self, task_type: str) -> List[LearningPattern]:
@@ -173,7 +173,7 @@ class PromptStore:
                     if pattern.task_type == task_type:
                         patterns.append(pattern)
             except Exception as e:
-                print(f"Ошибка загрузки паттерна: {e}")
+                logger.error(f"Ошибка загрузки паттерна: {e}")
         
         return sorted(patterns, key=lambda x: x.success_count, reverse=True)
     
@@ -193,7 +193,7 @@ class PromptStore:
             
             return True
         except Exception as e:
-            print(f"Ошибка сохранения контекста сайта: {e}")
+            logger.error(f"Ошибка сохранения контекста сайта: {e}")
             return False
     
     async def get_website_context(self, website_url: str) -> Optional[WebsiteContext]:
@@ -213,7 +213,7 @@ class PromptStore:
                 context_dict = self._deserialize_datetimes(context_dict)
                 return WebsiteContext(**context_dict)
         except Exception as e:
-            print(f"Ошибка загрузки контекста сайта: {e}")
+            logger.error(f"Ошибка загрузки контекста сайта: {e}")
             return None
     
     async def update_task_status(self, task_id: str, status: str) -> bool:
@@ -282,7 +282,7 @@ class PromptStore:
                     if isinstance(v, str):
                         try:
                             result[k] = datetime.fromisoformat(v)
-                        except:
+                        except (ValueError, TypeError):
                             result[k] = v
                     else:
                         result[k] = v

@@ -6,6 +6,7 @@ from typing import Dict, Set
 from fastapi import WebSocket, WebSocketDisconnect
 from datetime import datetime
 import json
+from loguru import logger
 
 
 class ConnectionManager:
@@ -43,7 +44,7 @@ class ConnectionManager:
         try:
             await websocket.send_json(message)
         except Exception as e:
-            print(f"Ошибка отправки сообщения: {e}")
+            logger.warning(f"Ошибка отправки WebSocket сообщения: {e}")
     
     async def broadcast_to_task(self, task_id: str, message: dict):
         """Отправить сообщение всем подписчикам задачи"""
@@ -171,7 +172,7 @@ async def websocket_endpoint(websocket: WebSocket, task_id: str = None):
     except WebSocketDisconnect:
         manager.disconnect(websocket, task_id)
     except Exception as e:
-        print(f"WebSocket ошибка: {e}")
+        logger.warning(f"WebSocket ошибка: {e}")
         manager.disconnect(websocket, task_id)
 
 

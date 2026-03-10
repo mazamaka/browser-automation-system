@@ -284,10 +284,9 @@ class AgentManager:
         llm_model = self.execution_provider.get_langchain_model()
         logger.info("🤖 LLM модель создана")
 
-        # Диагностика API ключа
-        api_key = self.execution_provider.api_key
-        if api_key:
-            logger.info(f"🔑 API ключ присутствует (начало: {api_key[:10]}...)")
+        # Проверка наличия API ключа
+        if self.execution_provider.api_key:
+            logger.info("🔑 API ключ присутствует")
         else:
             logger.warning("⚠️  API ключ отсутствует!")
 
@@ -519,7 +518,7 @@ class AgentManager:
                 else:
                     self._on_task_update(task.task_id, event, task)
             except Exception as e:
-                print(f"Ошибка в колбэке task_update: {e}")
+                logger.warning(f"Ошибка в колбэке task_update: {e}")
     
     async def get_task_status(self, task_id: str) -> Optional[Dict[str, Any]]:
         """Получить статус задачи"""

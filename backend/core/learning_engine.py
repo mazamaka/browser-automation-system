@@ -180,7 +180,7 @@ class LearningEngine:
                     parsed = urlparse(step.page_url)
                     if parsed.netloc:
                         websites.add(parsed.netloc)
-                except:
+                except (ValueError, AttributeError):
                     pass
         
         return list(websites)

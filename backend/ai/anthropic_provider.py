@@ -81,7 +81,7 @@ DOM структура:
             if json_start != -1 and json_end > json_start:
                 json_str = response[json_start:json_end]
                 return json.loads(json_str)
-        except:
+        except (json.JSONDecodeError, ValueError):
             pass
         
         # Если не удалось распарсить JSON, возвращаем текстовый ответ

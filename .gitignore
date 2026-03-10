@@ -10,8 +10,10 @@ __pycache__/
 .venv/
 venv/
 *.egg-info/
+.mypy_cache/
+.pytest_cache/
 
-# Data
+# Data (runtime)
 data/
 logs/
 
@@ -19,6 +21,7 @@ logs/
 .idea/
 .vscode/
 *.swp
+*.swo
 
 # Node
 node_modules/
@@ -28,3 +31,6 @@ frontend/node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Debug/temp files
+check_api_key.py
