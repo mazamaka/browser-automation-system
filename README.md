@@ -1,393 +1,183 @@
 # Browser Automation System
 
-Самообучающаяся система автоматизации браузера на базе **browser-use** и AI моделей.
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Node.js 18+](https://img.shields.io/badge/node-18+-green.svg)](https://nodejs.org/)
+[![Docker](https://img.shields.io/badge/docker-ready-blue.svg)](https://www.docker.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Описание
+Self-learning browser automation system based on **browser-use** and AI models (Claude). Transforms short text descriptions into fully automated browser interaction scenarios, learning from execution results.
 
-Это инновационная система, которая преобразует короткие текстовые описания задач (мини-промпты) в полностью автоматизированные сценарии работы с браузером. Система использует AI для анализа веб-страниц, генерации детальных инструкций и самообучается на основе результатов выполнения.
+## Features
 
-### Основные возможности
+✅ **Automatic Script Generation** - Describe task, system creates detailed automation plan
+✅ **Self-Learning** - Improves with each execution
+✅ **Multi-Model Support** - Claude, GPT-4, browser-use
+✅ **Web Interface** - React-based UI for task management
+✅ **Real-time Updates** - WebSocket for execution progress
+✅ **JSON Storage** - Simple prompts and history storage without database
 
-✅ **Автоматическая генерация скриптов** - Вы даете короткое описание, система создает детальный план
-✅ **Самообучение** - С каждым выполнением система становится точнее и быстрее
-✅ **Мультимодельность** - Поддержка разных AI моделей (Claude, GPT-4, browser-use)
-✅ **Веб-интерфейс** - Удобный React интерфейс для управления задачами
-✅ **Реал-тайм обновления** - WebSocket для отслеживания прогресса выполнения
-✅ **JSON хранилище** - Простое хранение промптов и истории без БД
+## Quick Start
 
-## Архитектура
-
-```
-browser-automation-system/
-├── backend/                  # Python FastAPI бэкенд
-│   ├── core/                # Основная логика
-│   │   ├── agent_manager.py      # Главный оркестратор
-│   │   ├── browser_controller.py # Управление browser-use
-│   │   ├── prompt_engine.py      # Генерация промптов
-│   │   └── learning_engine.py    # Самообучение
-│   ├── storage/             # Хранилище данных
-│   │   ├── models.py             # Pydantic модели
-│   │   └── prompt_store.py       # JSON storage
-│   ├── ai/                  # AI провайдеры
-│   │   ├── model_provider.py     # Абстракция
-│   │   ├── anthropic_provider.py # Claude
-│   │   └── browser_use_model.py  # browser-use
-│   ├── api/                 # FastAPI routes
-│   │   ├── routes.py
-│   │   ├── schemas.py
-│   │   └── websocket.py
-│   └── main.py             # Точка входа
-├── frontend/                # React TypeScript фронтенд
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── TaskCreator.tsx
-│   │   │   └── TaskList.tsx
-│   │   ├── App.tsx
-│   │   └── main.tsx
-│   └── package.json
-└── data/                   # Данные (создается автоматически)
-    ├── prompts/            # Сохраненные промпты
-    ├── executions/         # Результаты выполнения
-    └── screenshots/        # Скриншоты
-
-```
-
-## Быстрый старт (с Makefile)
-
-### Установка
+### Setup
 
 ```bash
-# Клонировать или перейти в директорию проекта
 cd browser-automation-system
-
-# Установить все зависимости
 make install
-
-# Настроить .env файл
-nano .env
-# Добавьте:
-# ANTHROPIC_API_KEY=ваш_ключ_anthropic
-# BROWSER_USE_API_KEY=ваш_ключ_browser_use
+nano .env  # Add ANTHROPIC_API_KEY
+make up    # Run backend (8000) and frontend (3000)
 ```
 
-### Запуск
+### Manual Setup
 
-```bash
-# Запустить backend и frontend одной командой
-make up
-
-# Или запустить с проверкой .env
-make dev
-```
-
-### Другие команды
-
-```bash
-make down     # Остановить серверы
-make status   # Проверить статус
-make health   # Проверить здоровье системы
-make help     # Показать все команды
-```
-
-## Установка вручную (без Makefile)
-
-### Требования
-
-- Python 3.11+
-- Node.js 18+
-- Anthropic API ключ (для анализа и генерации промптов)
-- Browser Use API ключ (для выполнения задач в браузере)
-
-### Backend
-
-```bash
-# Создание виртуального окружения
-python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# или
-.venv\Scripts\activate  # Windows
-
-# Установка зависимостей
-pip install -r requirements.txt
-
-# Установка Playwright браузеров
-playwright install chromium
-
-# Настройка переменных окружения
-cp .env.example .env
-# Отредактируйте .env и добавьте ваш ANTHROPIC_API_KEY
-```
-
-### Frontend
-
-```bash
-cd frontend
-npm install
-```
-
-### Запуск вручную
+**Requirements:** Python 3.11+, Node.js 18+, Anthropic API key
 
 Backend:
 ```bash
+python -m venv .venv
 source .venv/bin/activate
-python -m backend.main
+pip install -r requirements.txt
+playwright install chromium
 ```
 
 Frontend:
 ```bash
-cd frontend
-npm run dev
+cd frontend && npm install
 ```
 
-**Рекомендуется использовать `make up` для автоматического запуска!**
-
-## Использование
-
-### Пример 1: Простая задача
-
-```
-Мини-промпт: "зайти на google.com и найти информацию о пиве"
-```
-
-Система:
-1. Откроет браузер на google.com
-2. Проанализирует DOM структуру страницы
-3. Создаст детальный промпт с селекторами элементов
-4. Выполнит поиск через browser-use
-5. Сохранит результаты и промпт для повторного использования
-
-### Пример 2: Сложная задача
-
-```
-Мини-промпт: "зайти в гугл аккаунт и запустить рекламу по пиву"
-```
-
-Система:
-1. Определит начальный URL (https://ads.google.com)
-2. Проанализирует форму входа
-3. Создаст план действий:
-   - Перейти на страницу входа
-   - Заполнить email
-   - Заполнить пароль
-   - Перейти в рекламный кабинет
-   - Создать кампанию
-4. Выполнит все шаги
-5. Сохранит успешный паттерн для обучения
-
-### API Endpoints
-
-#### Создание задачи
+Run:
 ```bash
+python -m backend.main  # Backend
+cd frontend && npm run dev  # Frontend
+```
+
+## Architecture
+
+```
+backend/
+├── core/                   # Main orchestration
+│   ├── agent_manager.py    # Main orchestrator
+│   ├── browser_controller.py
+│   ├── prompt_engine.py    # Prompt generation
+│   └── learning_engine.py  # Self-learning
+├── storage/               # Data storage (JSON)
+│   ├── models.py          # Pydantic models
+│   └── prompt_store.py    # File-based storage
+├── ai/                    # AI providers
+│   ├── model_provider.py  # Abstraction
+│   └── anthropic_provider.py
+├── api/                   # FastAPI routes
+└── main.py               # Entry point
+
+frontend/                  # React + TypeScript
+```
+
+## How It Works
+
+### First Task Execution
+
+1. **Analysis** - AI analyzes task and determines initial page
+2. **Page Exploration** - Browser opens page, extracts DOM
+3. **Prompt Generation** - Claude creates detailed system prompt with:
+   - Step-by-step instructions
+   - CSS selectors for elements
+   - Success checks
+4. **Execution** - browser-use performs task following the detailed prompt
+5. **Learning** - Extract successful patterns for future reuse
+
+### Subsequent Runs
+
+1. **Similarity Search** - Find similar tasks in history
+2. **Reuse Prompt** - Use proven successful prompt
+3. **Fast Execution** - browser-use runs task from existing plan
+4. **Auto-Optimize** - Improve prompts when errors occur
+
+## API
+
+```bash
+# Create task
 POST /api/tasks/create
 {
-  "mini_prompt": "ваше описание задачи",
-  "metadata": {}
+  "mini_prompt": "go to google.com and find beer information"
 }
-```
 
-#### Запуск выполнения
-```bash
+# Run task
 POST /api/tasks/{task_id}/run
-{
-  "force_new_prompt": false
-}
-```
 
-#### Получение информации о задаче
-```bash
+# Get status
 GET /api/tasks/{task_id}
-```
 
-#### Список всех задач
-```bash
-GET /api/tasks/?limit=20&offset=0
-```
+# List tasks
+GET /api/tasks/?limit=20
 
-#### Статистика
-```bash
+# Statistics
 GET /api/stats/general
 GET /api/stats/learning
 ```
 
-## Как работает самообучение
+## Environment Configuration
 
-### Первый запуск задачи
-
-1. **Анализ**: AI анализирует мини-промпт и определяет начальную страницу
-2. **Исследование**: Браузер открывает страницу и извлекает DOM
-3. **Генерация промпта**: Claude создает детальный системный промпт с:
-   - Пошаговыми инструкциями
-   - CSS селекторами элементов
-   - Проверками успешности
-4. **Выполнение**: browser-use выполняет задачу по детальному промпту
-5. **Сохранение**: Промпт и результаты сохраняются в JSON
-
-### Повторные запуски
-
-1. **Поиск похожих**: Система ищет похожие задачи в истории
-2. **Использование промпта**: Если найден успешный промпт, используется он
-3. **Быстрое выполнение**: browser-use сразу выполняет по готовому плану
-4. **Оптимизация**: При ошибках промпт автоматически улучшается
-
-### Паттерны обучения
-
-Система извлекает и сохраняет паттерны:
-- **Login patterns**: Успешные сценарии входа в аккаунты
-- **Form fill patterns**: Заполнение форм
-- **Navigation patterns**: Навигация по сайтам
-- **E-commerce patterns**: Покупки и корзины
-
-## Конфигурация
-
-### Переменные окружения (.env)
-
-```bash
-# API ключи
+```env
 ANTHROPIC_API_KEY=your_key_here
-
-# Сервер
 HOST=0.0.0.0
 PORT=8000
-HEADLESS=false  # true для запуска браузера без UI
-
-# Данные
+HEADLESS=false
 DATA_DIR=data
-
-# Браузер
 BROWSER_TIMEOUT=60000
 MAX_BROWSER_STEPS=50
 ```
 
-### Выбор AI моделей
+## Data Structure
 
-В коде можно изменить модели:
+**Task Storage** (`data/prompts/`):
+- Task ID, mini-prompt, system-prompt with success rate
+- Maintains execution history
+
+**Learning Patterns** (`data/patterns/`):
+- Extracted from successful executions
+- Types: login, form_fill, search, ecommerce
+- Shared selectors and approaches
+
+## Development
+
+### Commands
+
+```bash
+make status    # Check server status
+make health    # Health check
+make logs-backend    # Backend logs
+make test      # Run tests
+```
+
+### Add New AI Provider
 
 ```python
-# Для анализа и генерации промптов
-analysis_provider = ModelFactory.create_provider(
-    "anthropic",  # или "openai"
-    api_key=api_key,
-    model_name="claude-sonnet-4-20250514"  # Claude Sonnet 4.5
-)
+from backend.ai.model_provider import AIModelProvider, ModelFactory
 
-# Для выполнения в браузере
-execution_provider = ModelFactory.create_provider(
-    "browser-use",  # использует bu-1-0 или Claude
-    api_key=api_key
-)
-```
-
-## Структура данных
-
-### Task (Задача)
-```json
-{
-  "task_id": "uuid",
-  "mini_prompt": "короткий промпт от пользователя",
-  "system_prompt": {
-    "content": "детальный промпт с инструкциями",
-    "selectors": ["#email", ".button-submit"],
-    "success_rate": 0.85,
-    "executions_count": 10
-  },
-  "status": "completed",
-  "executions": [...]
-}
-```
-
-### TaskExecution (Выполнение)
-```json
-{
-  "execution_id": "uuid",
-  "timestamp": "2025-01-18T10:00:00",
-  "success": true,
-  "duration_ms": 15000,
-  "steps": [
-    {
-      "step_number": 1,
-      "description": "Navigate to page",
-      "success": true
-    }
-  ],
-  "screenshots": ["path/to/screenshot.png"]
-}
-```
-
-## Разработка
-
-### Добавление нового AI провайдера
-
-1. Создайте класс в `backend/ai/`:
-
-```python
-from .model_provider import AIModelProvider, ModelFactory
-
-class MyAIProvider(AIModelProvider):
+class MyProvider(AIModelProvider):
     async def generate_response(self, prompt, system_prompt=None):
-        # Ваша реализация
+        # Implementation
         pass
-    
+
     def get_langchain_model(self):
-        # Возвращает LangChain модель
+        # Return LangChain model
         pass
 
-# Регистрация
-ModelFactory.register_provider("my-ai", MyAIProvider)
-```
-
-### Расширение frontend
-
-Добавьте новые компоненты в `frontend/src/components/`:
-
-```typescript
-export default function MyComponent() {
-  // Ваш код
-}
+ModelFactory.register_provider("my-provider", MyProvider)
 ```
 
 ## Troubleshooting
 
-### Ошибка: "ANTHROPIC_API_KEY не установлен"
-Убедитесь что в `.env` файле указан валидный API ключ
+- **ANTHROPIC_API_KEY not set** - Add to `.env` file
+- **Browser won't open** - Run `playwright install chromium`
+- **Frontend can't connect** - Verify backend runs on 8000
+- **Import errors** - Run from project root: `python -m backend.main`
 
-### Браузер не открывается
-Проверьте что Playwright установлен:
-```bash
-playwright install chromium
-```
+## License
 
-### Frontend не подключается к backend
-Проверьте что backend запущен на порту 8000 и vite proxy настроен правильно
+MIT - see [LICENSE](LICENSE) file.
 
-### Ошибки импорта Python
-Убедитесь что запускаете из корневой директории:
-```bash
-python -m backend.main
-```
+## Links
 
-## Roadmap
-
-- [ ] Поддержка GPT-4 и других моделей
-- [ ] Улучшенная система паттернов
-- [ ] Экспорт задач в скрипты
-- [ ] Планировщик задач (cron)
-- [ ] Мультиязычность интерфейса
-- [ ] Docker контейнеры
-- [ ] CI/CD pipeline
-
-## Лицензия
-
-MIT
-
-## Контакты
-
-Если у вас есть вопросы или предложения, создайте Issue в репозитории.
-
----
-
-**Создано с использованием:**
-- browser-use - автоматизация браузера
-- Claude (Anthropic) - AI анализ и генерация
-- FastAPI - Python backend
-- React + TypeScript - Frontend
-- Playwright - управление браузером
+- **Documentation**: See [CLAUDE.md](./CLAUDE.md) for architecture details
+- **Frontend Build**: `cd frontend && npm run build`
+- **Testing**: `pytest` from project root
